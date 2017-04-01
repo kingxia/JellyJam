@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Input;
 
 using April1Game.resources;
 
+using System.Collections.Generic;
+
 namespace April1Game {
     /// <summary>
     /// This is the main type for your game.
@@ -16,6 +18,11 @@ namespace April1Game {
 
         private int height = 600;
         private int width = 800;
+
+        private Vector2 greenJellyPosition;
+
+        // Key to X, Y change
+        private Dictionary<Keys, Vector2> moveTransforms;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -37,6 +44,14 @@ namespace April1Game {
         /// </summary>
         protected override void Initialize() {
             // TODO: Add your initialization logic here
+
+            moveTransforms = new Dictionary<Keys, Vector2>();
+            moveTransforms[Keys.W] = new Vector2(0, -1);
+            moveTransforms[Keys.A] = new Vector2(-1, 0);
+            moveTransforms[Keys.S] = new Vector2(0, 1);
+            moveTransforms[Keys.D] = new Vector2(1, 0);
+
+            greenJellyPosition = new Vector2(100, 100);
 
             base.Initialize();
         }
@@ -71,6 +86,15 @@ namespace April1Game {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            KeyboardState keyboard = Keyboard.GetState();
+            foreach (Keys key in moveTransforms.Keys) {
+                if (keyboard.IsKeyDown(key)) {
+                    Vector2 transform = moveTransforms[key];
+                    greenJellyPosition = new Vector2(greenJellyPosition.X + transform.X,
+                        greenJellyPosition.Y + transform.Y);
+                }
+            }
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -85,7 +109,7 @@ namespace April1Game {
 
             spriteBatch.Begin();
             spriteBatch.Draw(sprites[Sprites.BLUE_JELLY], new Vector2(250, 200), Color.White);
-            spriteBatch.Draw(sprites[Sprites.GREEN_JELLY], new Vector2(150, 200), Color.White);
+            spriteBatch.Draw(sprites[Sprites.GREEN_JELLY], greenJellyPosition, Color.White);
             spriteBatch.Draw(sprites[Sprites.RED_JELLY], new Vector2(100, 200), Color.White);
             spriteBatch.End();
 
