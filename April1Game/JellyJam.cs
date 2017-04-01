@@ -10,7 +10,7 @@ namespace April1Game {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>
-    public class Game1 : Game {
+    public class JellyJam : Game {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
@@ -24,7 +24,7 @@ namespace April1Game {
         // Key to X, Y change
         private Dictionary<Keys, Vector2> moveTransforms;
 
-        public Game1() {
+        public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
