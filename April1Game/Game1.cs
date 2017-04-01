@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using April1Game.resources;
+
 namespace April1Game {
     /// <summary>
     /// This is the main type for your game.
@@ -10,9 +12,21 @@ namespace April1Game {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
+        Sprites sprites;
+
+        private int height = 600;
+        private int width = 800;
+
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferHeight = height;
+            graphics.PreferredBackBufferWidth = width;
+
+            this.IsMouseVisible = true;
+            this.IsFixedTimeStep = true;
+            graphics.SynchronizeWithVerticalRetrace = true;
         }
 
         /// <summary>
@@ -34,6 +48,8 @@ namespace April1Game {
         protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            sprites = new Sprites(Content);
 
             // TODO: use this.Content to load your game content here
         }
@@ -65,7 +81,11 @@ namespace April1Game {
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.White);
+
+            spriteBatch.Begin();
+            spriteBatch.Draw(sprites[Sprites.IMAGE], new Vector2(200, 200), Color.White);
+            spriteBatch.End();
 
             // TODO: Add your drawing code here
 
