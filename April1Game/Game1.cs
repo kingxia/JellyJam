@@ -84,7 +84,9 @@ namespace April1Game {
             GraphicsDevice.Clear(Color.White);
 
             spriteBatch.Begin();
-            spriteBatch.Draw(sprites[Sprites.IMAGE], new Vector2(200, 200), Color.White);
+            spriteBatch.Draw(sprites[Sprites.BLUE_JELLY], new Vector2(250, 200), Color.White);
+            spriteBatch.Draw(sprites[Sprites.GREEN_JELLY], new Vector2(150, 200), Color.White);
+            spriteBatch.Draw(sprites[Sprites.RED_JELLY], new Vector2(100, 200), Color.White);
             spriteBatch.End();
 
             // TODO: Add your drawing code here

@@ -6,13 +6,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace April1Game.resources {
     public class Sprites {
-        public static string IMAGE = "image";
+        public static string RED_JELLY = "red_jelly";
+        public static string BLUE_JELLY = "blue_jelly";
+        public static string GREEN_JELLY = "green_jelly";
 
         private Dictionary<String, Texture2D> sprites;
 
         public Sprites(ContentManager content) {
             sprites = new Dictionary<string, Texture2D>();
-            sprites[IMAGE] = content.Load<Texture2D>("sprites/test_enemy");
+            sprites[RED_JELLY] = content.Load<Texture2D>("sprites/red_jelly");
+            sprites[BLUE_JELLY] = content.Load<Texture2D>("sprites/blue_jelly");
+            sprites[GREEN_JELLY] = content.Load<Texture2D>("sprites/green_jelly");
         }
 
         public Texture2D this[string key] {
