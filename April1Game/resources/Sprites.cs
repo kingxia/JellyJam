@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace April1Game.resources {
+namespace JellyJam.resources {
     public class Sprites {
         public static string RED_JELLY = "red_jelly";
         public static string BLUE_JELLY = "blue_jelly";

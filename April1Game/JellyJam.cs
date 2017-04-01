@@ -2,11 +2,11 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using April1Game.resources;
+using JellyJam.resources;
 
 using System.Collections.Generic;
 
-namespace April1Game {
+namespace JellyJam {
     /// <summary>
     /// This is the main type for your game.
     /// </summary>

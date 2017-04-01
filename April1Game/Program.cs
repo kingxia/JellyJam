@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace April1Game {
+namespace JellyJam {
     /// <summary>
     /// The main class.
     /// </summary>
