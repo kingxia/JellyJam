@@ -7,9 +7,6 @@ using JellyJam.resources;
 using System.Collections.Generic;
 
 namespace JellyJam {
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
     public class JellyJam : Game {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
