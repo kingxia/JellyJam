@@ -54,8 +54,19 @@ namespace JellyJam.Entities {
             return new Vector2(getAnimation().width(frameIndex), getAnimation().height(frameIndex));
         }
 
+        // TODO: I think there's a more elegant way of doing this.
+        public Rectangle getRect() {
+            Vector2 dimensions = getDimensions();
+            return new Rectangle((int) position.X, (int) position.Y,
+                (int) dimensions.X, (int) dimensions.Y);
+        }
+
         public Animation getAnimation() {
             return animationLibrary[animation + currentAction];
+        }
+
+        public Texture2D getFrame() {
+            return getAnimation().getFrame(frameIndex);
         }
     }
 }

@@ -7,6 +7,7 @@ namespace JellyJam.Sprites {
     public class AnimationLibrary {
         // Animation bases
         public static string BLUE_JELLY = "blue_jelly";
+        public static string RED_JELLY = "red_jelly";
 
         // Animation actions
         public static string WALKING = "_walking";
@@ -30,6 +31,11 @@ namespace JellyJam.Sprites {
             };
             IEnumerable<Texture2D> walkTextures = blueJelly.Select(f => content.Load<Texture2D>(f));
             animations[BLUE_JELLY + WALKING] = new Animation(new List<Texture2D>(walkTextures));
+
+            List<Texture2D> redJelly = new List<Texture2D>() {
+                content.Load<Texture2D>("sprites/red_jelly"),
+            };
+            animations[RED_JELLY] = new Animation(redJelly);
         }
 
         public Animation this[string key] {

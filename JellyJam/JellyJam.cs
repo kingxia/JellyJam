@@ -3,6 +3,7 @@ using JellyJam.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 using System;
 
 // TODO: determine if Entity x/y is top-left or center.
@@ -16,6 +17,7 @@ namespace JellyJam {
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private Random random;
 
         private AnimationLibrary animations;
 
@@ -24,6 +26,10 @@ namespace JellyJam {
         private int saltDistanceFromPlayer = 50; // pixels
         private Texture2D saltCircle;
         private Vector2 saltPosition;
+
+        private List<Pickup> items;
+        private float itemSpawnRate = 3;
+        private float currentTime = 0;
 
         public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
@@ -45,9 +51,13 @@ namespace JellyJam {
         protected override void Initialize() {
             base.Initialize();
 
+            random = new Random();
+
             // TODO: Add your initialization logic here
             player = new Player(animations, AnimationLibrary.BLUE_JELLY, Vector2.Zero);
-           
+            items = new List<Pickup>() {
+                new Pickup(animations, AnimationLibrary.RED_JELLY, new Vector2(50, 50)),
+            };
         }
 
         /// <summary>
@@ -97,6 +107,21 @@ namespace JellyJam {
             saltPosition = Vector2.Subtract(saltPosition,
                 new Vector2(saltCircle.Width / 2, saltCircle.Height / 2));
 
+            // Check intersections with items, and remove collected items.
+            List<Pickup> toRemove = new List<Pickup>();
+            foreach(Pickup item in items) {
+                if (player.getRect().Intersects(item.getRect())) {
+                    toRemove.Add(item);
+                }
+            }
+            items.RemoveAll(item => toRemove.Contains(item));
+
+            currentTime += elapsedTime;
+            if (currentTime > itemSpawnRate) {
+                items.Add(createItem());
+                currentTime = 0;
+            }
+
             base.Update(gameTime);
         }
 
@@ -109,10 +134,22 @@ namespace JellyJam {
             
             spriteBatch.Begin();
             spriteBatch.Draw(saltCircle, saltPosition, Color.White);
+
+            foreach (Pickup item in items) {
+                item.draw(spriteBatch);
+            }
+
             player.draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        private Pickup createItem() {
+            float xCoord = (float) random.NextDouble() * WIDTH;
+            float yCoord = (float) random.NextDouble() * HEIGHT;
+            return new Pickup(animations, AnimationLibrary.RED_JELLY,
+                new Vector2(xCoord, yCoord));
         }
     }
 }

@@ -43,6 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Entities\Entity.cs" />
+    <Compile Include="Entities\Pickup.cs" />
     <Compile Include="Entities\Player.cs" />
     <Compile Include="JellyJam.cs" />
     <Compile Include="Program.cs" />
