@@ -11,12 +11,15 @@ namespace JellyJam
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+        Texture2D tx;
+        Vector2 position;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -28,6 +31,7 @@ namespace JellyJam
         {
             // TODO: Add your initialization logic here
 
+            position = new Vector2(0, 0);
             base.Initialize();
         }
 
@@ -41,6 +45,7 @@ namespace JellyJam
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            tx = Content.Load<Texture2D>("sprites/Untitled");
         }
 
         /// <summary>
@@ -63,6 +68,15 @@ namespace JellyJam
                 Exit();
 
             // TODO: Add your update logic here
+            KeyboardState ks = Keyboard.GetState();
+            int speed = 3;
+            if (ks.IsKeyDown(Keys.W)) position.Y -= speed;
+            if (ks.IsKeyDown(Keys.A)) position.X -= speed;
+            if (ks.IsKeyDown(Keys.S)) position.Y += speed;
+            if (ks.IsKeyDown(Keys.D)) position.X += speed;
+
+            position.X = MathHelper.Clamp(position.X, 0, GraphicsDevice.Viewport.Width - tx.Width);
+            position.Y = MathHelper.Clamp(position.Y, 0, GraphicsDevice.Viewport.Height - tx.Height);
 
             base.Update(gameTime);
         }
@@ -73,9 +87,12 @@ namespace JellyJam
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Wheat);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            spriteBatch.Draw(tx, position, Color.White);
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }
