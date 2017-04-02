@@ -6,8 +6,12 @@ using Microsoft.Xna.Framework.Graphics;
 namespace JellyJam.Entities {
     public class Entity {
         public static float DEFAULT_FRAME_LENGTH = 0.5f; // seconds
+        public static string DEFAULT_CURRENT_ACTION = "";
 
-        protected Animation animation;
+        protected AnimationLibrary animationLibrary;
+        protected string animation;
+        protected string currentAction;
+
         protected float frameLength;
         protected float frameTime;
         protected int frameIndex;
@@ -15,24 +19,26 @@ namespace JellyJam.Entities {
         protected Vector2 position;
 
 
-        public Entity(Animation animation, Vector2 position) {
+        public Entity(AnimationLibrary animationLibrary, string animation, Vector2 position) {
+            this.animationLibrary = animationLibrary;
             this.animation = animation;
-            this.frameLength = DEFAULT_FRAME_LENGTH;
             this.position = position;
 
+            frameLength = DEFAULT_FRAME_LENGTH;
             frameIndex = 0;
+            currentAction = DEFAULT_CURRENT_ACTION;
         }
 
         public virtual void update(float elapsedTime) {
             frameTime += elapsedTime;
             if (frameTime > frameLength) {
                 frameTime %= frameLength;
-                frameIndex = frameIndex + 1 >= animation.count() ? 0 : frameIndex + 1;
+                frameIndex = frameIndex + 1 >= getAnimation().count() ? 0 : frameIndex + 1;
             }
         }
 
         public void draw(SpriteBatch spriteBatch) {
-            animation.drawFrame(spriteBatch, position, frameIndex);
+            getAnimation().drawFrame(spriteBatch, position, frameIndex);
         }
 
         public Vector2 getPosition() {
@@ -45,7 +51,11 @@ namespace JellyJam.Entities {
         }
 
         public Vector2 getDimensions() {
-            return new Vector2(animation.width(frameIndex), animation.height(frameIndex));
+            return new Vector2(getAnimation().width(frameIndex), getAnimation().height(frameIndex));
+        }
+
+        public Animation getAnimation() {
+            return animationLibrary[animation + currentAction];
         }
     }
 }

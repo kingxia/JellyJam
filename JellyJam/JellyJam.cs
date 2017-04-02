@@ -46,7 +46,7 @@ namespace JellyJam {
             base.Initialize();
 
             // TODO: Add your initialization logic here
-            player = new Player(animations[AnimationLibrary.BLUE_JELLY], Vector2.Zero);
+            player = new Player(animations, AnimationLibrary.BLUE_JELLY, Vector2.Zero);
            
         }
 

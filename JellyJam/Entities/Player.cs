@@ -14,20 +14,31 @@ namespace JellyJam.Entities {
 
         private int speed = 5;
 
-        public Player(Animation animation, Vector2 position) : base(animation, position) { }
+        public Player(AnimationLibrary animationLibrary, string animation, Vector2 position) :
+            base(animationLibrary, animation, position) { }
 
         // TODO: decouple input from update, maybe with InputHandler.
         public void update(float elapsedTime, KeyboardState keyboard) {
+            bool moved = false;
             foreach (Keys key in moveTransforms.Keys) {
                 if (keyboard.IsKeyDown(key)) {
                     position = Vector2.Add(position, Vector2.Multiply(moveTransforms[key], speed));
+                    moved = true;
                 }
             }
 
-            position.X = MathHelper.Clamp(position.X, 0, JellyJam.WIDTH - animation.width());
-            position.Y = MathHelper.Clamp(position.Y, 0, JellyJam.HEIGHT - animation.height());
+            position.X = MathHelper.Clamp(position.X, 0, JellyJam.WIDTH - getAnimation().width());
+            position.Y = MathHelper.Clamp(position.Y, 0, JellyJam.HEIGHT -getAnimation().height());
 
             base.update(elapsedTime);
+
+            // Update the animation after processing time elapsed so that it starts on frame 0.
+            string newAction = moved ? AnimationLibrary.WALKING : DEFAULT_CURRENT_ACTION;
+            if (newAction != currentAction) {
+                frameIndex = 0;
+                frameTime = 0;
+            }
+            currentAction = newAction;
         }
     }
 }
