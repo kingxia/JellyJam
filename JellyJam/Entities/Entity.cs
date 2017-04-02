@@ -27,7 +27,7 @@ namespace JellyJam.Entities {
             frameTime += elapsedTime;
             if (frameTime > frameLength) {
                 frameTime %= frameLength;
-                frameIndex = frameIndex + 1 >= animation.length() ? 0 : frameIndex + 1;
+                frameIndex = frameIndex + 1 >= animation.count() ? 0 : frameIndex + 1;
             }
         }
 
