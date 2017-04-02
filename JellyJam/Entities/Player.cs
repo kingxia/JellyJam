@@ -14,8 +14,7 @@ namespace JellyJam.Entities {
 
         private int speed = 5;
 
-        public Player(AnimationLibrary animationLibrary, string animation, Vector2 position) :
-            base(animationLibrary, animation, position) { }
+        public Player(string animation, Vector2 position) : base(animation, position) { }
 
         // TODO: decouple input from update, maybe with InputHandler.
         public void update(float elapsedTime, KeyboardState keyboard) {

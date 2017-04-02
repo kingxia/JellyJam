@@ -16,7 +16,6 @@ namespace JellyJam.Entities {
      * An item which can be picked up.
      */
     public class Pickup : Entity {
-        public Pickup(AnimationLibrary animationLibrary, string animation, Vector2 position) :
-            base(animationLibrary, animation, position) { }
+        public Pickup(string animation, Vector2 position) : base(animation, position) { }
     }
 }

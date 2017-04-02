@@ -19,7 +19,7 @@ namespace JellyJam {
         private SpriteBatch spriteBatch;
         private Random random;
 
-        private AnimationLibrary animations;
+        public static AnimationLibrary animations;
 
         private Player player;
 
@@ -54,9 +54,9 @@ namespace JellyJam {
             random = new Random();
 
             // TODO: Add your initialization logic here
-            player = new Player(animations, AnimationLibrary.BLUE_JELLY, Vector2.Zero);
+            player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero);
             items = new List<Pickup>() {
-                new Pickup(animations, AnimationLibrary.RED_JELLY, new Vector2(50, 50)),
+                new Pickup(AnimationLibrary.RED_JELLY, new Vector2(50, 50)),
             };
         }
 
@@ -148,8 +148,7 @@ namespace JellyJam {
         private Pickup createItem() {
             float xCoord = (float) random.NextDouble() * WIDTH;
             float yCoord = (float) random.NextDouble() * HEIGHT;
-            return new Pickup(animations, AnimationLibrary.RED_JELLY,
-                new Vector2(xCoord, yCoord));
+            return new Pickup(AnimationLibrary.RED_JELLY, new Vector2(xCoord, yCoord));
         }
     }
 }

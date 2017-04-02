@@ -19,11 +19,11 @@ namespace JellyJam.Entities {
         protected Vector2 position;
 
 
-        public Entity(AnimationLibrary animationLibrary, string animation, Vector2 position) {
-            this.animationLibrary = animationLibrary;
+        public Entity(string animation, Vector2 position) {
             this.animation = animation;
             this.position = position;
 
+            animationLibrary = JellyJam.animations;
             frameLength = DEFAULT_FRAME_LENGTH;
             frameIndex = 0;
             currentAction = DEFAULT_CURRENT_ACTION;
