@@ -7,10 +7,10 @@ namespace JellyJam.Entities {
     public class Entity {
         public static float DEFAULT_FRAME_LENGTH = 0.5f; // seconds
 
-        private Animation animation;
-        private float frameLength;
-        private float frameTime; 
-        private int frameIndex;
+        protected Animation animation;
+        protected float frameLength;
+        protected float frameTime;
+        protected int frameIndex;
 
         protected Vector2 position;
 

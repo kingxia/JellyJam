@@ -11,6 +11,7 @@ namespace JellyJam.Sprites {
     public class Animation {
         public static Color DEFAULT_COLOR = Color.White;
 
+        // TODO: decide if we want this to be a set of frames or spritesheet; or either.
         private List<Texture2D> frames;
 
         public Animation(List<Texture2D> frames) {
@@ -21,7 +22,17 @@ namespace JellyJam.Sprites {
             return frames[frame];
         }
 
-        public int length() {
+        public int width() {
+            // Assumes all frames are of equal width.
+            return frames[0].Width;
+        }
+
+        public int height() {
+            // Assumes all frames are of equal height.
+            return frames[0].Height;
+        }
+
+        public int count() {
             return frames.Count;
         }
 

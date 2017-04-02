@@ -3,19 +3,26 @@ using JellyJam.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace JellyJam {
     public class JellyJam : Game {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        TimeSpan timePerFrame = TimeSpan.FromSeconds(1 / 15.0);
+        // TODO: add support for changing viewport size.
+        public static int HEIGHT = 600;
+        public static int WIDTH = 800;
+
+        private GraphicsDeviceManager graphics;
+        private SpriteBatch spriteBatch;
+
         private AnimationLibrary animations;
+
         private Player player;
 
         public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
+
+            graphics.PreferredBackBufferHeight = HEIGHT;
+            graphics.PreferredBackBufferWidth = WIDTH;
         }
 
 
@@ -67,11 +74,6 @@ namespace JellyJam {
 
             float elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             player.update(elapsedTime, keyboard);
-
-            // TODO: add clamping back in
-            // position.X = MathHelper.Clamp(position.X, 0, GraphicsDevice.Viewport.Width - tx.Width);
-            // position.Y = MathHelper.Clamp(position.Y, 0, GraphicsDevice.Viewport.Height - tx.Height);
-
 
             base.Update(gameTime);
         }
