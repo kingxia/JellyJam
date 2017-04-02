@@ -109,3 +109,9 @@
 /processorParam:TextureFormat=Color
 /build:sprites/red_jelly.png
 
+#begin music/heroic_demise.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:music/heroic_demise.mp3
+

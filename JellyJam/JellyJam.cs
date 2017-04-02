@@ -1,5 +1,6 @@
 ﻿using JellyJam.Entities;
 using JellyJam.Sprites;
+using JellyJam.Ui;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +12,8 @@ using System;
 // -- it allows us to correct position better / maintain relative positions more easily
 namespace JellyJam {
     public class JellyJam : Game {
+        public static AnimationLibrary animations;
+
         // TODO: add support for changing viewport size.
         public static int HEIGHT = 600;
         public static int WIDTH = 800;
@@ -19,7 +22,7 @@ namespace JellyJam {
         private SpriteBatch spriteBatch;
         private Random random;
 
-        public static AnimationLibrary animations;
+        private MusicLibrary musicLibrary;
 
         private Player player;
 
@@ -69,7 +72,10 @@ namespace JellyJam {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             animations = new AnimationLibrary(Content);
+            musicLibrary = new MusicLibrary(Content);
             saltCircle = Content.Load<Texture2D>("sprites/select_circle");
+
+            musicLibrary.play(MusicLibrary.HEROIC_DEMISE);
         }
 
 
