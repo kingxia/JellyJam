@@ -4,13 +4,8 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Linq;
 
-namespace JellyJam
-{
-    /// <summary>
-    /// This is the main type for your game.
-    /// </summary>
-    public class Game1 : Game
-    {
+namespace JellyJam {
+    public class JellyJam : Game {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         Texture2D tx;
@@ -18,8 +13,7 @@ namespace JellyJam
         TimeSpan timePerFrame = TimeSpan.FromSeconds(1 / 15.0);
         private AnimatedSprite playerAnimation;
 
-        public Game1()
-        {
+        public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
@@ -31,16 +25,14 @@ namespace JellyJam
         /// related content.  Calling base.Initialize will enumerate through any components
         /// and initialize them as well.
         /// </summary>
-        protected override void Initialize()
-        {
+        protected override void Initialize() {
             // TODO: Add your initialization logic here
 
             position = new Vector2(0, 0);
             base.Initialize();
         }
 
-        class AnimatedSprite
-        {
+        class AnimatedSprite {
             Texture2D[] frames;
             int Frame = 0;
             int framecount;
@@ -50,43 +42,36 @@ namespace JellyJam
 
             int direction = 1;
 
-            public AnimatedSprite(Texture2D[] frames, float timePerFrame)
-            {
+            public AnimatedSprite(Texture2D[] frames, float timePerFrame) {
                 this.timePerFrame = timePerFrame;
                 this.frames = frames;
                 this.framecount = frames.Length;
             }
 
-            public void UpdateFrame(float elapsed)
-            {
+            public void UpdateFrame(float elapsed) {
                 this.elapsed += elapsed;
-                if (this.elapsed > timePerFrame)
-                {
+                if (this.elapsed > timePerFrame)  {
                     nextFrame();
                     this.elapsed -= timePerFrame;
                 }
             }
 
-            private void nextFrame()
-            {
+            private void nextFrame() {
                 // Advance the frame
                 Frame = (Frame + direction) % framecount;
 
                 // "bounce" direction the other way if we reached one of the boundary frames
-                if (Frame == 0)
-                {
+                if (Frame == 0) {
                     direction = 1;
                 }
-                if (Frame == framecount - 1)
-                {
+                if (Frame == framecount - 1) {
                     direction = -1;
                 }
 
                 //Frame = (Frame + 1) % framecount;
             }
 
-            public void DrawFrame(SpriteBatch batch, Vector2 screenPosition)
-            {
+            public void DrawFrame(SpriteBatch batch, Vector2 screenPosition) {
                 batch.Draw(frames[Frame], screenPosition, Color.White);
             }
 
@@ -96,8 +81,7 @@ namespace JellyJam
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
-        protected override void LoadContent()
-        {
+        protected override void LoadContent() {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
@@ -120,8 +104,7 @@ namespace JellyJam
         /// UnloadContent will be called once per game and is the place to unload
         /// game-specific content.
         /// </summary>
-        protected override void UnloadContent()
-        {
+        protected override void UnloadContent() {
             // TODO: Unload any non ContentManager content here
         }
 
@@ -130,8 +113,7 @@ namespace JellyJam
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
+        protected override void Update(GameTime gameTime) {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -141,23 +123,19 @@ namespace JellyJam
 
             float elapsed = (float)gameTime.ElapsedGameTime.TotalSeconds;
             // TODO decouple animation updates from controls.
-            if (ks.IsKeyDown(Keys.W))
-            {
+            if (ks.IsKeyDown(Keys.W)) {
                 position.Y -= speed;
                 playerAnimation.UpdateFrame(elapsed);
             }
-            if (ks.IsKeyDown(Keys.A))
-            {
+            if (ks.IsKeyDown(Keys.A)) {
                 position.X -= speed;
                 playerAnimation.UpdateFrame(elapsed);
             }
-            if (ks.IsKeyDown(Keys.S))
-            {
+            if (ks.IsKeyDown(Keys.S)) {
                 position.Y += speed;
                 playerAnimation.UpdateFrame(elapsed);
             }
-            if (ks.IsKeyDown(Keys.D))
-            {
+            if (ks.IsKeyDown(Keys.D)) {
                 position.X += speed;
                 playerAnimation.UpdateFrame(elapsed);
             }
@@ -173,8 +151,7 @@ namespace JellyJam
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
+        protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Wheat);
 
             // TODO: Add your drawing code here
