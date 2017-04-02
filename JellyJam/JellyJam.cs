@@ -42,6 +42,11 @@ namespace JellyJam {
             graphics.PreferredBackBufferWidth = WIDTH;
 
             this.IsMouseVisible = true;
+            this.IsFixedTimeStep = true;
+            graphics.SynchronizeWithVerticalRetrace = true;
+
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
+
         }
 
 
