@@ -24,12 +24,20 @@ namespace JellyJam.Sprites {
 
         public int width() {
             // Assumes all frames are of equal width.
-            return frames[0].Width;
+            return width(0);
+        }
+
+        public int width(int frame) {
+            return frames[frame].Width;
         }
 
         public int height() {
             // Assumes all frames are of equal height.
-            return frames[0].Height;
+            return height(0);
+        }
+
+        public int height(int frame) {
+            return frames[frame].Height;
         }
 
         public int count() {

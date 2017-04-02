@@ -34,5 +34,18 @@ namespace JellyJam.Entities {
         public void draw(SpriteBatch spriteBatch) {
             animation.drawFrame(spriteBatch, position, frameIndex);
         }
+
+        public Vector2 getPosition() {
+            return new Vector2(position.X, position.Y);
+        }
+
+        public Vector2 getCenter() {
+            Vector2 dimensions = getDimensions();
+            return new Vector2(position.X + dimensions.X / 2, position.Y + dimensions.Y / 2);
+        }
+
+        public Vector2 getDimensions() {
+            return new Vector2(animation.width(frameIndex), animation.height(frameIndex));
+        }
     }
 }

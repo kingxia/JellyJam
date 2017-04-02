@@ -3,7 +3,11 @@ using JellyJam.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
+// TODO: determine if Entity x/y is top-left or center.
+// -- center is probably better since if we have sprites of changing height/width (we shouldn't)
+// -- it allows us to correct position better / maintain relative positions more easily
 namespace JellyJam {
     public class JellyJam : Game {
         // TODO: add support for changing viewport size.
@@ -17,12 +21,18 @@ namespace JellyJam {
 
         private Player player;
 
+        private int saltDistanceFromPlayer = 50; // pixels
+        private Texture2D saltCircle;
+        private Vector2 saltPosition;
+
         public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
             graphics.PreferredBackBufferHeight = HEIGHT;
             graphics.PreferredBackBufferWidth = WIDTH;
+
+            this.IsMouseVisible = true;
         }
 
 
@@ -49,6 +59,7 @@ namespace JellyJam {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             animations = new AnimationLibrary(Content);
+            saltCircle = Content.Load<Texture2D>("sprites/select_circle");
         }
 
 
@@ -70,10 +81,21 @@ namespace JellyJam {
                 Exit();
 
             // TODO: Add your update logic here
+            MouseState mouse = Mouse.GetState();
             KeyboardState keyboard = Keyboard.GetState();
 
             float elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             player.update(elapsedTime, keyboard);
+
+            // TODO: determine if we want to use grid system or fluid x/y system
+            Vector2 playerCenter = player.getCenter();
+            Vector2 saltDirection = new Vector2(mouse.X - playerCenter.X, mouse.Y - playerCenter.Y);
+            saltDirection.Normalize();
+            saltPosition = Vector2.Multiply(saltDirection, saltDistanceFromPlayer);
+            saltPosition = Vector2.Add(saltPosition, playerCenter);
+            // currently must subtract a width/height half-length to align sprite properly
+            saltPosition = Vector2.Subtract(saltPosition,
+                new Vector2(saltCircle.Width / 2, saltCircle.Height / 2));
 
             base.Update(gameTime);
         }
@@ -86,6 +108,7 @@ namespace JellyJam {
             GraphicsDevice.Clear(Color.Wheat);
             
             spriteBatch.Begin();
+            spriteBatch.Draw(saltCircle, saltPosition, Color.White);
             player.draw(spriteBatch);
             spriteBatch.End();
 
