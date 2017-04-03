@@ -27,7 +27,10 @@ namespace JellyJam.Sprites {
                 "sprites/Players/Player Blue/playerBlue_walk2",
                 "sprites/Players/Player Blue/playerBlue_walk3",
                 "sprites/Players/Player Blue/playerBlue_walk4",
-                "sprites/Players/Player Blue/playerBlue_walk5"
+                "sprites/Players/Player Blue/playerBlue_walk5",
+                "sprites/Players/Player Blue/playerBlue_walk2",
+                "sprites/Players/Player Blue/playerBlue_walk3",
+                "sprites/Players/Player Blue/playerBlue_walk4",
             };
             IEnumerable<Texture2D> walkTextures = blueJelly.Select(f => content.Load<Texture2D>(f));
             animations[BLUE_JELLY + WALKING] = new Animation(new List<Texture2D>(walkTextures));

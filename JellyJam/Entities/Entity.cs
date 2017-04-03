@@ -35,6 +35,8 @@ namespace JellyJam.Entities {
                 frameTime %= frameLength;
                 frameIndex = frameIndex + 1 >= getAnimation().count() ? 0 : frameIndex + 1;
             }
+
+            frameIndex %= getAnimation().count();
         }
 
         public void draw(SpriteBatch spriteBatch) {
