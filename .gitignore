@@ -243,3 +243,11 @@ ModelManifest.xml
 
 # FAKE - F# Make
 .fake/
+
+# Rider IDE files
+.idea
+
+# Vim swapfile
+*.swp
+
+**/Thumbs.db
