@@ -22,7 +22,6 @@ namespace JellyJam {
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private Random random;
 
         private MusicLibrary musicLibrary;
 
@@ -33,8 +32,6 @@ namespace JellyJam {
         private Vector2 saltPosition;
 
         private ItemManager _itemManager;
-        private List<Item> items;
-        private float itemSpawnRate = 1;
         private float currentTime = 0;
 
         private Enemy enemy;
@@ -47,8 +44,8 @@ namespace JellyJam {
             graphics.PreferredBackBufferHeight = HEIGHT;
             graphics.PreferredBackBufferWidth = WIDTH;
 
-            this.IsMouseVisible = true;
-            this.IsFixedTimeStep = true;
+            IsMouseVisible = true;
+            IsFixedTimeStep = true;
             graphics.SynchronizeWithVerticalRetrace = true;
 
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
@@ -65,12 +62,10 @@ namespace JellyJam {
         protected override void Initialize() {
             base.Initialize();
 
-            random = new Random();
-
             // TODO: Add your initialization logic here
             player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero);
             enemy = new Enemy(AnimationLibrary.BLUE_JELLY, new Vector2(200, 200), new Tracker(player));
-            _itemManager = new ItemManager(AnimationLibrary.RED_JELLY);
+            _itemManager = new ItemManager(AnimationLibrary.RED_JELLY, new Vector2(WIDTH, HEIGHT));
         }
 
         /// <summary>
@@ -124,15 +119,6 @@ namespace JellyJam {
             saltPosition = Vector2.Subtract(saltPosition,
                 new Vector2(saltCircle.Width / 2, saltCircle.Height / 2));
 
-            currentTime += elapsedTime;
-
-          // TODO move into item manager
-            if (currentTime > itemSpawnRate) {
-              items.Add(_itemManager.Spawn(new Vector2(0, 0), new Vector2(WIDTH, HEIGHT)));
-              //items.Add(createItem());
-              currentTime = 0;
-            }
-
             _itemManager.Update(gameTime, player);
 
             base.Update(gameTime);
@@ -151,7 +137,6 @@ namespace JellyJam {
             enemy.Draw(spriteBatch);
             player.Draw(spriteBatch);
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
     }

@@ -19,10 +19,16 @@ namespace JellyJam.Entities {
 
   public class ItemManager {
     private readonly string _animationResource;
+    private readonly Vector2 _bounds;
     private List<Item> items = new List<Item>();
+    Random random = new Random();
+    private float currentTime = 0;
+    private float spawnRate = 1;
 
-    public ItemManager(string animationResource) {
+
+    public ItemManager(string animationResource, Vector2 bounds) {
       _animationResource = animationResource;
+      _bounds = bounds;
     }
 
     public Item Spawn(Vector2 position) {
@@ -31,15 +37,15 @@ namespace JellyJam.Entities {
       return spawn;
     }
 
-    Random random = new Random();
-
     // Spawn in a random coordinate inside the rectangle
-    public Item Spawn(Vector2 lowerBounds, Vector2 upperBounds) {
-      float xScale = upperBounds.X - lowerBounds.X;
-      float yScale = upperBounds.Y - lowerBounds.Y;
-      float xCoord = (float) random.NextDouble() * xScale + lowerBounds.X;
-      float yCoord = (float) random.NextDouble() * yScale + lowerBounds.Y;
-      return Spawn(new Vector2(xCoord, yCoord));
+    public void Spawn(Vector2 lowerBounds, Vector2 upperBounds, int numberOfInstances = 1) {
+      for (int i = 0; i < numberOfInstances; i++) {
+        var xScale = upperBounds.X - lowerBounds.X;
+        var yScale = upperBounds.Y - lowerBounds.Y;
+        var xCoord = (float) random.NextDouble() * xScale + lowerBounds.X;
+        var yCoord = (float) random.NextDouble() * yScale + lowerBounds.Y;
+        Spawn(new Vector2(xCoord, yCoord));
+      }
     }
 
     public IEnumerable<Item> GetCollisions(Rectangle boundingBox) {
@@ -50,10 +56,12 @@ namespace JellyJam.Entities {
       items = items.Except(GetCollisions(boundingBox)).ToList();
     }
 
-
-    private float currentTime = 0;
-
     public void Update(GameTime gameTime, Player player) {
+      currentTime += (float) gameTime.ElapsedGameTime.TotalSeconds;
+      if (currentTime > spawnRate) {
+        Spawn(new Vector2(0, 0), _bounds);
+        currentTime = 0;
+      }
       RemoveCollisions(player.getRect());
     }
 
