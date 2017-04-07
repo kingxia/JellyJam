@@ -7,12 +7,10 @@ using JellyJam.Sprites;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
+// TODO keep track of number of items picked up, "score" or "inventory".
+// TODO random clustered spawns around a point (one jelly dies and drops several things)
+
 namespace JellyJam.Entities {
-  // TOOD: should this be an interface that we can describe entities with?
-  // TODO: what sort of pickups do we want to have, just jellies?
-  /**
-   * An item which can be picked up.
-   */
   public class Item : Entity {
     public Item(string animationResource, Vector2 position) : base(animationResource, position) { }
   }
@@ -22,8 +20,8 @@ namespace JellyJam.Entities {
     private readonly Vector2 _bounds;
     private List<Item> items = new List<Item>();
     Random random = new Random();
-    private float currentTime = 0;
     private float spawnRate = 1;
+    private float currentTime = 0;
 
 
     public ItemManager(string animationResource, Vector2 bounds) {
