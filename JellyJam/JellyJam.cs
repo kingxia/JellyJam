@@ -132,11 +132,12 @@ namespace JellyJam {
             foreach (SaltSpot salt in saltSpots) {
                 salt.update(elapsedTime);
             }
-            _itemManager.Update(gameTime, player);
             
-            UpdateSaltKills();
+            _itemManager.Update(gameTime);
             int itemsGrabbed = _itemManager.RemoveCollisions(player.getRect());
 
+            UpdateSaltKills();
+      
             score.Add(itemsGrabbed);
 
             base.Update(gameTime);
@@ -150,7 +151,6 @@ namespace JellyJam {
             GraphicsDevice.Clear(Color.Wheat);
 
             spriteBatch.Begin();
-
             _itemManager.Draw(spriteBatch);
             foreach (Enemy enemy in enemies) {
                 enemy.Draw(spriteBatch);
@@ -174,26 +174,26 @@ namespace JellyJam {
         }
     }
 
-  public class Score {
-    // TODO move me
-    private readonly SpriteFont _font;
-    private int score;
+   public class Score {
+      // TODO move me
+      private readonly SpriteFont _font;
+      private int score;
 
-    public Score(SpriteFont font) {
-      _font = font;
-    }
+      public Score(SpriteFont font) {
+        _font = font;
+      }
 
-    public void Add(int amount) {
-      score += amount;
-    }
+      public void Add(int amount) {
+        score += amount;
+      }
 
-    public void Draw(SpriteBatch spriteBatch) {
-      spriteBatch.DrawString(_font, ScoreString(), new Vector2(0, 0), Color.Black);
-    }
+      public void Draw(SpriteBatch spriteBatch) {
+        spriteBatch.DrawString(_font, ScoreString(), new Vector2(0, 0), Color.Black);
+      }
 
-    private string ScoreString() {
-      return String.Format("Score: {0}", score);
-    }
-  }
+      private string ScoreString() {
+        return String.Format("Score: {0}", score);
+      }
+   }
 }
 
