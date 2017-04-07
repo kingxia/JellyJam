@@ -16,12 +16,14 @@ namespace JellyJam.Entities.Behaviors {
       this.target = target;
     }
 
-    public GameAction getAction() {
+    public GameAction getAction(Vector2 location) {
       return GameAction.Move;
     }
 
-    public Vector2 getMove() {
-      return Vector2.Zero;
+    public Vector2 getMove(Vector2 location) {
+      Vector2 direction = Vector2.Subtract(target.getPosition(), location);
+      direction.Normalize();
+      return direction;
     }
   }
 }

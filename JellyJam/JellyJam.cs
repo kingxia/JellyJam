@@ -1,4 +1,5 @@
 ﻿using JellyJam.Entities;
+using JellyJam.Entities.Behaviors;
 using JellyJam.Sprites;
 using JellyJam.Ui;
 using Microsoft.Xna.Framework;
@@ -34,6 +35,9 @@ namespace JellyJam {
         private float itemSpawnRate = 3;
         private float currentTime = 0;
 
+        private Enemy enemy;
+
+
         public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -63,6 +67,7 @@ namespace JellyJam {
 
             // TODO: Add your initialization logic here
             player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero);
+            enemy = new Enemy(AnimationLibrary.BLUE_JELLY, new Vector2(200, 200), new Tracker(player));
             items = new List<Pickup>() {
                 new Pickup(AnimationLibrary.RED_JELLY, new Vector2(50, 50)),
             };
@@ -107,6 +112,7 @@ namespace JellyJam {
 
             float elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             player.update(elapsedTime, keyboard);
+            enemy.update(elapsedTime);
 
             // TODO: determine if we want to use grid system or fluid x/y system
             Vector2 playerCenter = player.getCenter();
@@ -149,6 +155,8 @@ namespace JellyJam {
             foreach (Pickup item in items) {
                 item.draw(spriteBatch);
             }
+
+            enemy.draw(spriteBatch);
 
             player.draw(spriteBatch);
             spriteBatch.End();

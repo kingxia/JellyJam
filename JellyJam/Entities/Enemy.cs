@@ -12,10 +12,10 @@ namespace JellyJam.Entities {
     }
 
     public override void update(float elapsedTime) {
-      GameAction action = behavior.getAction();
+      GameAction action = behavior.getAction(position);
       if (action == GameAction.Move) {
-        Vector2 destination = behavior.getMove();
-        position = destination;
+        Vector2 direction = behavior.getMove(position);
+        position = Vector2.Add(position, Vector2.Multiply(direction, speed));
       }
 
       base.update(elapsedTime);

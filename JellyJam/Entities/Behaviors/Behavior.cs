@@ -5,8 +5,8 @@
  */
 namespace JellyJam.Entities.Behaviors {
   public interface Behavior {
-    GameAction getAction();
-    Vector2 getMove();
+    GameAction getAction(Vector2 location);
+    Vector2 getMove(Vector2 location);
   }
 }
 
