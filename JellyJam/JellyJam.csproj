@@ -42,6 +42,9 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Entities\Behaviors\Behavior.cs" />
+    <Compile Include="Entities\Behaviors\Tracker.cs" />
+    <Compile Include="Entities\Enemy.cs" />
     <Compile Include="Entities\Entity.cs" />
     <Compile Include="Entities\Pickup.cs" />
     <Compile Include="Entities\Player.cs" />
