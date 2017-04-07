@@ -117,12 +117,12 @@ namespace JellyJam {
           Keyboard.GetState().IsKeyDown(Keys.Escape))
         Exit();
 
-      // TODO: Add your update logic here
+      // TODO: Add your Update logic here
       MouseState mouse = Mouse.GetState();
       KeyboardState keyboard = Keyboard.GetState();
 
       if (MouseClicked(mouse)) {
-        SaltSpot salt = new SaltSpot(AnimationLibrary.SALT_SPOT, player.getSaltPosition());
+        SaltSpot salt = new SaltSpot(AnimationLibrary.SALT_SPOT, player.getPosition(), player.getSaltPosition());
         saltSpots.Add(salt);
       }
       previousMouseState = mouse;
@@ -130,10 +130,10 @@ namespace JellyJam {
       float elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
       player.update(elapsedTime, keyboard);
       foreach (Enemy enemy in enemies) {
-        enemy.update(elapsedTime);
+        enemy.Update(elapsedTime);
       }
       foreach (SaltSpot salt in saltSpots) {
-        salt.update(elapsedTime);
+        salt.Update(elapsedTime);
       }
 
       _itemManager.Update(gameTime);
@@ -151,7 +151,7 @@ namespace JellyJam {
     /// </summary>
     /// <param name="gameTime">Provides a snapshot of timing values.</param>
     protected override void Draw(GameTime gameTime) {
-      GraphicsDevice.Clear(Color.Wheat);
+      GraphicsDevice.Clear(Color.DarkSlateBlue);
 
       spriteBatch.Begin();
       saltSpots.ForEach(s => s.Draw(spriteBatch));

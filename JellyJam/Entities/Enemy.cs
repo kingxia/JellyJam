@@ -7,19 +7,19 @@ namespace JellyJam.Entities {
     private Behavior behavior;
     private int speed = 4;
 
-    public Enemy(string animation, Vector2 position, Behavior behavior) :
-      base(animation, position) {
+    public Enemy(string animation, Vector2 startPos, Behavior behavior) :
+      base(animation, startPos) {
       this.behavior = behavior;
     }
 
-    public override void update(float elapsedTime) {
+    public override void Update(float elapsedTime) {
       GameAction action = behavior.getAction(position);
       if (action == GameAction.Move) {
         Vector2 direction = behavior.getMove(position);
         position = Vector2.Add(position, Vector2.Multiply(direction, speed));
       }
 
-      base.update(elapsedTime);
+      base.Update(elapsedTime);
     }
   }
 }

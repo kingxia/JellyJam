@@ -19,8 +19,8 @@ namespace JellyJam.Entities {
     private int saltDistance; // Pixels
 
     public Player(
-        string animation, Vector2 position, Texture2D saltCircle,
-        int speed = 5, int saltDistance = 50) : base(animation, position) {
+        string animation, Vector2 startPos, Texture2D saltCircle,
+        int speed = 5, int saltDistance = 100) : base(animation, startPos) {
       this.saltCircle = saltCircle;
       this.speed = speed;
       this.saltDistance = saltDistance;
@@ -36,7 +36,7 @@ namespace JellyJam.Entities {
       spriteBatch.Draw(saltCircle, saltPosition, Color.White);
     }
 
-    // TODO: decouple input from update, maybe with InputHandler.
+    // TODO: decouple input from Update, maybe with InputHandler.
     public void update(float elapsedTime, KeyboardState keyboard) {
       bool moved = false;
       foreach (Keys key in moveTransforms.Keys) {
@@ -50,7 +50,7 @@ namespace JellyJam.Entities {
       position.Y = MathHelper.Clamp(position.Y, 0, JellyJam.HEIGHT - getAnimation().height());
       updateSaltPosition();
 
-      base.update(elapsedTime);
+      base.Update(elapsedTime);
 
       // Update the animationResource after processing time elapsed so that it starts on frame 0.
       string newAction = moved ? AnimationLibrary.WALKING : DEFAULT_CURRENT_ACTION;

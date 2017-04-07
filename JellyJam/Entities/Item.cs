@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace JellyJam.Entities {
   public class Item : Entity {
-    public Item(string animationResource, Vector2 position) : base(animationResource, position) { }
+    public Item(string animationResource, Vector2 startPos) : base(animationResource, startPos) { }
   }
 
   public class ItemManager {

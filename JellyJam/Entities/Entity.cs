@@ -18,10 +18,9 @@ namespace JellyJam.Entities {
 
     protected Vector2 position;
 
-
-    public Entity(string animationResource, Vector2 position) {
+    public Entity(string animationResource, Vector2 startPos) {
       this.animationResource = animationResource;
-      this.position = position;
+      this.position = startPos;
 
       animationLibrary = JellyJam.animations;
       frameLength = DEFAULT_FRAME_LENGTH;
@@ -29,7 +28,7 @@ namespace JellyJam.Entities {
       currentAction = DEFAULT_CURRENT_ACTION;
     }
 
-    public virtual void update(float elapsedTime) {
+    public virtual void Update(float elapsedTime) {
       frameTime += elapsedTime;
       if (frameTime > frameLength) {
         frameTime %= frameLength;
