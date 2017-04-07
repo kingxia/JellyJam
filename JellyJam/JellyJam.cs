@@ -34,8 +34,7 @@ namespace JellyJam {
         private ItemManager _itemManager;
         private float currentTime = 0;
 
-        private Enemy enemy;
-
+        private List<Enemy> enemies;
 
         public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
@@ -64,7 +63,14 @@ namespace JellyJam {
 
             // TODO: Add your initialization logic here
             player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero);
-            enemy = new Enemy(AnimationLibrary.BLUE_JELLY, new Vector2(200, 200), new Tracker(player));
+            enemies = new List<Enemy>();
+            enemies.Add(
+              new Enemy(AnimationLibrary.BLUE_JELLY, new Vector2(200, 200), new Tracker(player)));
+            enemies.Add(
+              new Enemy(
+                AnimationLibrary.BLUE_JELLY,
+                new Vector2(400, 150),
+                new Roamer(new Rectangle(0, 0, WIDTH, HEIGHT))));
             _itemManager = new ItemManager(AnimationLibrary.RED_JELLY, new Vector2(WIDTH, HEIGHT));
         }
 
@@ -107,7 +113,9 @@ namespace JellyJam {
 
             float elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             player.update(elapsedTime, keyboard);
-            enemy.update(elapsedTime);
+            foreach (Enemy enemy in enemies) {
+                enemy.update(elapsedTime);
+            }
 
             // TODO: determine if we want to use grid system or fluid x/y system
             Vector2 playerCenter = player.getCenter();
@@ -134,7 +142,9 @@ namespace JellyJam {
             spriteBatch.Begin();
             spriteBatch.Draw(saltCircle, saltPosition, Color.White);
             _itemManager.Draw(spriteBatch);
-            enemy.Draw(spriteBatch);
+            foreach (Enemy enemy in enemies) {
+                enemy.Draw(spriteBatch);
+            }
             player.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
