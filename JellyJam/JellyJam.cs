@@ -155,8 +155,11 @@ namespace JellyJam {
             foreach (Enemy enemy in enemies) {
                 enemy.Draw(spriteBatch);
             }
+            foreach (SaltSpot saltSpot in saltSpots) {
+                saltSpot.Draw(spriteBatch);
+            }
             player.Draw(spriteBatch);
-          score.Draw(spriteBatch);
+            score.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }
