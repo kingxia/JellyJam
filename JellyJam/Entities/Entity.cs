@@ -9,7 +9,7 @@ namespace JellyJam.Entities {
         public static string DEFAULT_CURRENT_ACTION = "";
 
         protected AnimationLibrary animationLibrary;
-        protected string animation;
+        protected string animationResource;
         protected string currentAction;
 
         protected float frameLength;
@@ -19,8 +19,8 @@ namespace JellyJam.Entities {
         protected Vector2 position;
 
 
-        public Entity(string animation, Vector2 position) {
-            this.animation = animation;
+        public Entity(string animationResource, Vector2 position) {
+            this.animationResource = animationResource;
             this.position = position;
 
             animationLibrary = JellyJam.animations;
@@ -39,7 +39,7 @@ namespace JellyJam.Entities {
             frameIndex %= getAnimation().count();
         }
 
-        public void draw(SpriteBatch spriteBatch) {
+        public void Draw(SpriteBatch spriteBatch) {
             getAnimation().drawFrame(spriteBatch, position, frameIndex);
         }
 
@@ -64,7 +64,7 @@ namespace JellyJam.Entities {
         }
 
         public Animation getAnimation() {
-            return animationLibrary[animation + currentAction];
+            return animationLibrary[animationResource + currentAction];
         }
 
         public Texture2D getFrame() {

@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 // TODO: determine if Entity x/y is top-left or center.
 // -- center is probably better since if we have sprites of changing height/width (we shouldn't)
@@ -31,8 +32,9 @@ namespace JellyJam {
         private Texture2D saltCircle;
         private Vector2 saltPosition;
 
-        private List<Pickup> items;
-        private float itemSpawnRate = 3;
+        private ItemManager _itemManager;
+        private List<Item> items;
+        private float itemSpawnRate = 1;
         private float currentTime = 0;
 
         private Enemy enemy;
@@ -68,9 +70,7 @@ namespace JellyJam {
             // TODO: Add your initialization logic here
             player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero);
             enemy = new Enemy(AnimationLibrary.BLUE_JELLY, new Vector2(200, 200), new Tracker(player));
-            items = new List<Pickup>() {
-                new Pickup(AnimationLibrary.RED_JELLY, new Vector2(50, 50)),
-            };
+            _itemManager = new ItemManager(AnimationLibrary.RED_JELLY);
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace JellyJam {
         /// all of your content.
         /// </summary>
         protected override void LoadContent() {
-            // Create a new SpriteBatch, which can be used to draw textures.
+            // Create a new SpriteBatch, which can be used to Draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             animations = new AnimationLibrary(Content);
@@ -124,50 +124,35 @@ namespace JellyJam {
             saltPosition = Vector2.Subtract(saltPosition,
                 new Vector2(saltCircle.Width / 2, saltCircle.Height / 2));
 
-            // Check intersections with items, and remove collected items.
-            List<Pickup> toRemove = new List<Pickup>();
-            foreach(Pickup item in items) {
-                if (player.getRect().Intersects(item.getRect())) {
-                    toRemove.Add(item);
-                }
-            }
-            items.RemoveAll(item => toRemove.Contains(item));
-
             currentTime += elapsedTime;
+
+          // TODO move into item manager
             if (currentTime > itemSpawnRate) {
-                items.Add(createItem());
-                currentTime = 0;
+              items.Add(_itemManager.Spawn(new Vector2(0, 0), new Vector2(WIDTH, HEIGHT)));
+              //items.Add(createItem());
+              currentTime = 0;
             }
+
+            _itemManager.Update(gameTime, player);
 
             base.Update(gameTime);
         }
 
         /// <summary>
-        /// This is called when the game should draw itself.
+        /// This is called when the game should Draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Wheat);
-            
+
             spriteBatch.Begin();
             spriteBatch.Draw(saltCircle, saltPosition, Color.White);
-
-            foreach (Pickup item in items) {
-                item.draw(spriteBatch);
-            }
-
-            enemy.draw(spriteBatch);
-
-            player.draw(spriteBatch);
+            _itemManager.Draw(spriteBatch);
+            enemy.Draw(spriteBatch);
+            player.Draw(spriteBatch);
             spriteBatch.End();
 
             base.Draw(gameTime);
-        }
-
-        private Pickup createItem() {
-            float xCoord = (float) random.NextDouble() * WIDTH;
-            float yCoord = (float) random.NextDouble() * HEIGHT;
-            return new Pickup(AnimationLibrary.RED_JELLY, new Vector2(xCoord, yCoord));
         }
     }
 }
