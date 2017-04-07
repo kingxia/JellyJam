@@ -39,7 +39,7 @@ namespace JellyJam.Entities {
             frameIndex %= getAnimation().count();
         }
 
-        public void draw(SpriteBatch spriteBatch) {
+        public virtual void draw(SpriteBatch spriteBatch) {
             getAnimation().drawFrame(spriteBatch, position, frameIndex);
         }
 

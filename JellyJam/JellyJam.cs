@@ -24,15 +24,16 @@ namespace JellyJam {
 
         private MusicLibrary musicLibrary;
 
+        private Texture2D saltCircle;
         private Player player;
 
-        private int saltDistanceFromPlayer = 50; // pixels
-        private Texture2D saltCircle;
-        private Vector2 saltPosition;
-
         private List<Pickup> items;
+        private List<SaltSpot> saltSpots;
+        private List<Enemy> enemies;
         private float itemSpawnRate = 3;
         private float currentTime = 0;
+
+        private MouseState previousMouseState;
 
         public JellyJam() {
             graphics = new GraphicsDeviceManager(this);
@@ -46,9 +47,7 @@ namespace JellyJam {
             graphics.SynchronizeWithVerticalRetrace = true;
 
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
-
         }
-
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -60,12 +59,13 @@ namespace JellyJam {
             base.Initialize();
 
             random = new Random();
+            previousMouseState = Mouse.GetState();
 
             // TODO: Add your initialization logic here
-            player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero);
-            items = new List<Pickup>() {
-                new Pickup(AnimationLibrary.RED_JELLY, new Vector2(50, 50)),
-            };
+            player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero, saltCircle);
+            saltSpots = new List<SaltSpot>();
+            items = new List<Pickup>();
+            enemies = new List<Enemy>();
         }
 
         /// <summary>
@@ -82,7 +82,6 @@ namespace JellyJam {
 
             musicLibrary.play(MusicLibrary.HEROIC_DEMISE);
         }
-
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -108,25 +107,14 @@ namespace JellyJam {
             float elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             player.update(elapsedTime, keyboard);
 
-            // TODO: determine if we want to use grid system or fluid x/y system
-            Vector2 playerCenter = player.getCenter();
-            Vector2 saltDirection = new Vector2(mouse.X - playerCenter.X, mouse.Y - playerCenter.Y);
-            saltDirection.Normalize();
-            saltPosition = Vector2.Multiply(saltDirection, saltDistanceFromPlayer);
-            saltPosition = Vector2.Add(saltPosition, playerCenter);
-            // currently must subtract a width/height half-length to align sprite properly
-            saltPosition = Vector2.Subtract(saltPosition,
-                new Vector2(saltCircle.Width / 2, saltCircle.Height / 2));
-
-            // Check intersections with items, and remove collected items.
-            List<Pickup> toRemove = new List<Pickup>();
-            foreach(Pickup item in items) {
-                if (player.getRect().Intersects(item.getRect())) {
-                    toRemove.Add(item);
-                }
+            if (MouseClicked(mouse)) {
+                SaltSpot toAdd = new SaltSpot(AnimationLibrary.SALT_SPOT, player.getSaltPosition());
+                saltSpots.Add(toAdd);
             }
-            items.RemoveAll(item => toRemove.Contains(item));
 
+            UpdateSaltKills();
+            UpdateItemPickup();
+            
             currentTime += elapsedTime;
             if (currentTime > itemSpawnRate) {
                 items.Add(createItem());
@@ -134,6 +122,8 @@ namespace JellyJam {
             }
 
             base.Update(gameTime);
+
+            previousMouseState = mouse;
         }
 
         /// <summary>
@@ -144,10 +134,17 @@ namespace JellyJam {
             GraphicsDevice.Clear(Color.Wheat);
             
             spriteBatch.Begin();
-            spriteBatch.Draw(saltCircle, saltPosition, Color.White);
 
             foreach (Pickup item in items) {
                 item.draw(spriteBatch);
+            }
+
+            foreach (Enemy enemy in enemies) {
+                enemy.draw(spriteBatch);
+            }
+
+            foreach (SaltSpot saltSpot in saltSpots) {
+                saltSpot.draw(spriteBatch);
             }
 
             player.draw(spriteBatch);
@@ -156,10 +153,41 @@ namespace JellyJam {
             base.Draw(gameTime);
         }
 
+        private void UpdateSaltKills() {
+            List<Pickup> itemsToAdd = new List<Pickup>();
+            List<SaltSpot> saltToRemove = new List<SaltSpot>();
+            foreach (Enemy enemy in enemies) {
+                foreach (SaltSpot spot in saltSpots) {
+                    if (spot.getRect().Intersects(enemy.getRect())) {
+                        itemsToAdd.Add(enemy.getDroppedItem());
+                        saltToRemove.Add(spot);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Check intersections with items, and remove collected items.
+        /// </summary>
+        private void UpdateItemPickup() {
+            List<Pickup> toRemove = new List<Pickup>();
+                foreach(Pickup item in items) {
+                    if (player.getRect().Intersects(item.getRect())) {
+                        toRemove.Add(item);
+                    }
+            }
+            items.RemoveAll(item => toRemove.Contains(item));
+        }
+
         private Pickup createItem() {
             float xCoord = (float) random.NextDouble() * WIDTH;
             float yCoord = (float) random.NextDouble() * HEIGHT;
             return new Pickup(AnimationLibrary.RED_JELLY, new Vector2(xCoord, yCoord));
         }
-    }
+
+        private bool MouseClicked(MouseState currentMouseState) {
+            return (previousMouseState.LeftButton == ButtonState.Released
+                && currentMouseState.LeftButton == ButtonState.Pressed);
+            }
+        }
 }
