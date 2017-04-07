@@ -115,3 +115,10 @@
 /processorParam:Quality=Best
 /build:music/heroic_demise.mp3
 
+#begin fonts/arial.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:fonts/arial.spritefont
+

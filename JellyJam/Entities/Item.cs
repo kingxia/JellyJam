@@ -50,17 +50,18 @@ namespace JellyJam.Entities {
       return items.FindAll(x => x.getRect().Intersects(boundingBox));
     }
 
-    public void RemoveCollisions(Rectangle boundingBox) {
-      items = items.Except(GetCollisions(boundingBox)).ToList();
+    public int RemoveCollisions(Rectangle boundingBox) {
+      var collisions = GetCollisions(boundingBox);
+      items = items.Except(collisions).ToList();
+      return collisions.Count();
     }
 
-    public void Update(GameTime gameTime, Player player) {
+    public void Update(GameTime gameTime) {
       currentTime += (float) gameTime.ElapsedGameTime.TotalSeconds;
       if (currentTime > spawnRate) {
         Spawn(new Vector2(0, 0), _bounds);
         currentTime = 0;
       }
-      RemoveCollisions(player.getRect());
     }
 
     public void Draw(SpriteBatch spriteBatch) {

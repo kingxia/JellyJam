@@ -22,6 +22,7 @@ namespace JellyJam {
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
+        private SpriteFont font;
 
         private MusicLibrary musicLibrary;
 
@@ -34,6 +35,7 @@ namespace JellyJam {
         private ItemManager _itemManager;
         private float currentTime = 0;
 
+        private Score score;
         private Enemy enemy;
 
 
@@ -65,6 +67,7 @@ namespace JellyJam {
             // TODO: Add your initialization logic here
             player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero);
             enemy = new Enemy(AnimationLibrary.BLUE_JELLY, new Vector2(200, 200), new Tracker(player));
+            score = new Score(font);
             _itemManager = new ItemManager(AnimationLibrary.RED_JELLY, new Vector2(WIDTH, HEIGHT));
         }
 
@@ -80,7 +83,9 @@ namespace JellyJam {
             musicLibrary = new MusicLibrary(Content);
             saltCircle = Content.Load<Texture2D>("sprites/select_circle");
 
-            musicLibrary.play(MusicLibrary.HEROIC_DEMISE);
+          font = Content.Load<SpriteFont>("fonts/arial");
+
+          musicLibrary.play(MusicLibrary.HEROIC_DEMISE);
         }
 
 
@@ -119,7 +124,10 @@ namespace JellyJam {
             saltPosition = Vector2.Subtract(saltPosition,
                 new Vector2(saltCircle.Width / 2, saltCircle.Height / 2));
 
-            _itemManager.Update(gameTime, player);
+            _itemManager.Update(gameTime);
+            int itemsGrabbed = _itemManager.RemoveCollisions(player.getRect());
+
+            score.Add(itemsGrabbed);
 
             base.Update(gameTime);
         }
@@ -133,11 +141,36 @@ namespace JellyJam {
 
             spriteBatch.Begin();
             spriteBatch.Draw(saltCircle, saltPosition, Color.White);
+
             _itemManager.Draw(spriteBatch);
             enemy.Draw(spriteBatch);
             player.Draw(spriteBatch);
+          score.Draw(spriteBatch);
             spriteBatch.End();
             base.Draw(gameTime);
         }
+
     }
+
+  public class Score {
+    // TODO move me
+    private readonly SpriteFont _font;
+    private int score;
+
+    public Score(SpriteFont font) {
+      _font = font;
+    }
+
+    public void Add(int amount) {
+      score += amount;
+    }
+
+    public void Draw(SpriteBatch spriteBatch) {
+      spriteBatch.DrawString(_font, ScoreString(), new Vector2(0, 0), Color.Black);
+    }
+
+    private string ScoreString() {
+      return String.Format("Score: {0}", score);
+    }
+  }
 }
