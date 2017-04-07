@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace JellyJam.Sprites {
     /**
-     * An animation for a single spritesheet.
+     * An animationResource for a single spritesheet.
      * 
      * Specific frames should be associated with entity objects, so that individual
      */

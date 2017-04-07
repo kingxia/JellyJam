@@ -14,7 +14,7 @@ namespace JellyJam.Entities {
 
         private int speed = 5;
 
-        public Player(string animation, Vector2 position) : base(animation, position) { }
+        public Player(string animationResource, Vector2 position) : base(animationResource, position) { }
 
         // TODO: decouple input from update, maybe with InputHandler.
         public void update(float elapsedTime, KeyboardState keyboard) {
@@ -31,7 +31,7 @@ namespace JellyJam.Entities {
 
             base.update(elapsedTime);
 
-            // Update the animation after processing time elapsed so that it starts on frame 0.
+            // Update the animationResource after processing time elapsed so that it starts on frame 0.
             string newAction = moved ? AnimationLibrary.WALKING : DEFAULT_CURRENT_ACTION;
             if (newAction != currentAction) {
                 frameIndex = 0;
