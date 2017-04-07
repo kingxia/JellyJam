@@ -1,4 +1,5 @@
 ﻿using JellyJam.Entities;
+using JellyJam.Entities.Behaviors;
 using JellyJam.Sprites;
 using JellyJam.Ui;
 using Microsoft.Xna.Framework;
@@ -6,6 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 // TODO: determine if Entity x/y is top-left or center.
 // -- center is probably better since if we have sprites of changing height/width (we shouldn't)
@@ -20,18 +22,21 @@ namespace JellyJam {
 
         private GraphicsDeviceManager graphics;
         private SpriteBatch spriteBatch;
-        private Random random;
+        private SpriteFont font;
 
         private MusicLibrary musicLibrary;
-
         private Texture2D saltCircle;
+
         private Player player;
 
-        private List<Pickup> items;
-        private List<SaltSpot> saltSpots;
-        private List<Enemy> enemies;
-        private float itemSpawnRate = 3;
+        private ItemManager _itemManager;
         private float currentTime = 0;
+
+        private Score score;
+        
+        // TODO: Change into managers.
+        private List<Enemy> enemies;
+        private List<SaltSpot> saltSpots;
 
         private MouseState previousMouseState;
 
@@ -42,12 +47,13 @@ namespace JellyJam {
             graphics.PreferredBackBufferHeight = HEIGHT;
             graphics.PreferredBackBufferWidth = WIDTH;
 
-            this.IsMouseVisible = true;
-            this.IsFixedTimeStep = true;
+            IsMouseVisible = true;
+            IsFixedTimeStep = true;
             graphics.SynchronizeWithVerticalRetrace = true;
 
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
         }
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -58,14 +64,19 @@ namespace JellyJam {
         protected override void Initialize() {
             base.Initialize();
 
-            random = new Random();
-            previousMouseState = Mouse.GetState();
-
             // TODO: Add your initialization logic here
             player = new Player(AnimationLibrary.BLUE_JELLY, Vector2.Zero, saltCircle);
-            saltSpots = new List<SaltSpot>();
-            items = new List<Pickup>();
+            score = new Score(font);
             enemies = new List<Enemy>();
+            enemies.Add(
+              new Enemy(AnimationLibrary.BLUE_JELLY, new Vector2(200, 200), new Tracker(player)));
+            enemies.Add(
+              new Enemy(
+                AnimationLibrary.BLUE_JELLY,
+                new Vector2(400, 150),
+                new Roamer(new Rectangle(0, 0, WIDTH, HEIGHT))));
+            _itemManager = new ItemManager(AnimationLibrary.RED_JELLY, new Vector2(WIDTH, HEIGHT));
+            saltSpots = new List<SaltSpot>();
         }
 
         /// <summary>
@@ -73,15 +84,18 @@ namespace JellyJam {
         /// all of your content.
         /// </summary>
         protected override void LoadContent() {
-            // Create a new SpriteBatch, which can be used to draw textures.
+            // Create a new SpriteBatch, which can be used to Draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             animations = new AnimationLibrary(Content);
             musicLibrary = new MusicLibrary(Content);
             saltCircle = Content.Load<Texture2D>("sprites/select_circle");
 
-            musicLibrary.play(MusicLibrary.HEROIC_DEMISE);
+          font = Content.Load<SpriteFont>("fonts/arial");
+
+          musicLibrary.play(MusicLibrary.HEROIC_DEMISE);
         }
+
 
         /// <summary>
         /// UnloadContent will be called once per game and is the place to unload
@@ -104,90 +118,79 @@ namespace JellyJam {
             MouseState mouse = Mouse.GetState();
             KeyboardState keyboard = Keyboard.GetState();
 
+            if (MouseClicked(mouse)) {
+              SaltSpot salt = new SaltSpot(AnimationLibrary.SALT_SPOT, player.getSaltPosition());  
+              saltSpots.Add(salt);
+            }
+            previousMouseState = mouse;
+
             float elapsedTime = (float) gameTime.ElapsedGameTime.TotalSeconds;
             player.update(elapsedTime, keyboard);
-
-            if (MouseClicked(mouse)) {
-                SaltSpot toAdd = new SaltSpot(AnimationLibrary.SALT_SPOT, player.getSaltPosition());
-                saltSpots.Add(toAdd);
+            foreach (Enemy enemy in enemies) {
+                enemy.update(elapsedTime);
             }
-
-            UpdateSaltKills();
-            UpdateItemPickup();
+            foreach (SaltSpot salt in saltSpots) {
+                salt.update(elapsedTime);
+            }
+            _itemManager.Update(gameTime, player);
             
-            currentTime += elapsedTime;
-            if (currentTime > itemSpawnRate) {
-                items.Add(createItem());
-                currentTime = 0;
-            }
+            UpdateSaltKills();
+            int itemsGrabbed = _itemManager.RemoveCollisions(player.getRect());
+
+            score.Add(itemsGrabbed);
 
             base.Update(gameTime);
-
-            previousMouseState = mouse;
         }
 
         /// <summary>
-        /// This is called when the game should draw itself.
+        /// This is called when the game should Draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Wheat);
-            
+
             spriteBatch.Begin();
 
-            foreach (Pickup item in items) {
-                item.draw(spriteBatch);
-            }
-
+            _itemManager.Draw(spriteBatch);
             foreach (Enemy enemy in enemies) {
-                enemy.draw(spriteBatch);
+                enemy.Draw(spriteBatch);
             }
-
-            foreach (SaltSpot saltSpot in saltSpots) {
-                saltSpot.draw(spriteBatch);
-            }
-
-            player.draw(spriteBatch);
+            player.Draw(spriteBatch);
+          score.Draw(spriteBatch);
             spriteBatch.End();
-
             base.Draw(gameTime);
         }
 
         private void UpdateSaltKills() {
-            List<Pickup> itemsToAdd = new List<Pickup>();
-            List<SaltSpot> saltToRemove = new List<SaltSpot>();
-            foreach (Enemy enemy in enemies) {
-                foreach (SaltSpot spot in saltSpots) {
-                    if (spot.getRect().Intersects(enemy.getRect())) {
-                        itemsToAdd.Add(enemy.getDroppedItem());
-                        saltToRemove.Add(spot);
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Check intersections with items, and remove collected items.
-        /// </summary>
-        private void UpdateItemPickup() {
-            List<Pickup> toRemove = new List<Pickup>();
-                foreach(Pickup item in items) {
-                    if (player.getRect().Intersects(item.getRect())) {
-                        toRemove.Add(item);
-                    }
-            }
-            items.RemoveAll(item => toRemove.Contains(item));
-        }
-
-        private Pickup createItem() {
-            float xCoord = (float) random.NextDouble() * WIDTH;
-            float yCoord = (float) random.NextDouble() * HEIGHT;
-            return new Pickup(AnimationLibrary.RED_JELLY, new Vector2(xCoord, yCoord));
+          //TODO. Remove salt.
         }
 
         private bool MouseClicked(MouseState currentMouseState) {
             return (previousMouseState.LeftButton == ButtonState.Released
                 && currentMouseState.LeftButton == ButtonState.Pressed);
-            }
         }
+    }
+
+  public class Score {
+    // TODO move me
+    private readonly SpriteFont _font;
+    private int score;
+
+    public Score(SpriteFont font) {
+      _font = font;
+    }
+
+    public void Add(int amount) {
+      score += amount;
+    }
+
+    public void Draw(SpriteBatch spriteBatch) {
+      spriteBatch.DrawString(_font, ScoreString(), new Vector2(0, 0), Color.Black);
+    }
+
+    private string ScoreString() {
+      return String.Format("Score: {0}", score);
+    }
+  }
 }
+
